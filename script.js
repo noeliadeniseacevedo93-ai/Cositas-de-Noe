@@ -7,7 +7,7 @@ const productos = [
     categoria: "Cuidado corporal",
     descripcion: "Hidratación y suavidad para todos los días.",
     precio: 17900,
-    imagen: "imagenes/CremaPerayFlordeLoto.WEBP",
+    imagen: "CremaPerayFlordeLoto.WEBP",
     stock: 1
   },
   {
@@ -17,7 +17,7 @@ const productos = [
     categoria: "Fragancias",
     descripcion: "Las fragancias que siempre te acompañan.",
     precio: 46000,
-    imagen: "imagenes/PazeHumor.WEBP",
+    imagen: "PazeHumor.WEBP",
     stock: 1
   },
   {
@@ -27,7 +27,7 @@ const productos = [
     categoria: "Fragancias",
     descripcion: "Una fragancia para acompañarte cada día.",
     precio: 46000,
-    imagen: "imagenes/KaiakUrbe.WEBP",
+    imagen: "KaiakUrbe.WEBP",
     stock: 1
   },
   {
@@ -37,7 +37,7 @@ const productos = [
     categoria: "Cabello",
     descripcion: "Cuidado especial para cada cabello.",
     precio: 7200,
-    imagen: "imagenes/RFTodoFlordeCerezayagua.WEBP",
+    imagen: "RFTodoFlordeCerezayagua.WEBP",
     stock: 1
   },
   {
@@ -47,7 +47,7 @@ const productos = [
     categoria: "Cabello",
     descripcion: "Cuidado especial para tu cabello.",
     precio: 8800,
-    imagen: "imagenes/RFShRestauyLisoP.WEBP",
+    imagen: "RFShRestauyLisoP.WEBP",
     stock: 1
   },
   {  id: 6,
@@ -56,7 +56,7 @@ const productos = [
     categoria: "Cuidado corporal",
     descripcion: "Hidratación Refrescante",
     precio: 12100,
-    imagen: "imagenes/carelichiyaloe.WEBP",
+    imagen: "carelichiyaloe.WEBP",
     stock: 1
   },
   {  id: 7,
@@ -65,7 +65,7 @@ const productos = [
     categoria: "Artículos del Hogar",
     descripcion: "Estilo",
     precio: 6000,
-    imagen: "imagenes/CopaChampagne.WEBP",
+    imagen: "CopaChampagne.WEBP",
     stock: 8
   }
 ];
