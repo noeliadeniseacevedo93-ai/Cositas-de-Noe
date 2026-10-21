@@ -713,7 +713,7 @@ footer p {
       rgba(255, 245, 247, 0.48),
       rgba(255, 245, 247, 0.48)
     ),
-    url("imagenes/fondoenunciado.jpg");
+    url("fondoenunciado.jpg");
 
   background-size: cover;
   background-position: center;
@@ -750,7 +750,7 @@ footer {
       rgba(250, 237, 239, 0.78),
       rgba(250, 237, 239, 0.88)
     ),
-    url("imagenes/fondoenunciado.jpg");
+    url("fondoenunciado.jpg");
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
