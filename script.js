@@ -7,7 +7,7 @@ const productos = [
     categoria: "Cuidado corporal",
     descripcion: "Hidratación y suavidad para todos los días.",
     precio: 17900,
-    imagen: "CremaPerayFlordeLoto.WEBP",
+    imagen: "CremaPerayFlordeLoto.webp",
     stock: 1
   },
   {
