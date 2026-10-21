@@ -1,0 +1,145 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cositas de Noe | Belleza y hogar</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header class="encabezado">
+    <p class="marca-chica">BELLEZA · BIENESTAR · HOGAR</p>
+    <h1>Cositas de Noe</h1>
+    <p class="subtitulo">Un mimo para vos y para tu hogar</p>
+
+    <nav class="navegacion">
+      <button type="button" id="ir-inicio">Inicio</button>
+      <a href="#categorias">Marcas</a>
+      <a href="#pedido">Mi pedido</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio">
+     
+	<div class="presentacion">
+ 	 <p class="etiqueta">UN MIMO PARA VOS</p>
+  	<h2>Pequeños gustos, grandes momentos.</h2>
+ 	 <p>
+  	  Descubrí tus fragancias favoritas, productos de belleza
+	    y detalles para hacer de tu hogar un lugar especial.
+ 	 </p>
+
+  	<div class="beneficios">
+  	  <div class="beneficio">
+   	   <span class="beneficio-icono">♡</span>
+    	  <span>Un mimo para vos</span>
+ 	   </div>
+
+  	  <div class="beneficio">
+    	  <span class="beneficio-icono">✿</span>
+    	  <span>Tus marcas favoritas</span>
+   	 </div>
+
+   	 <div class="beneficio">
+   	   <span class="beneficio-icono">⌂</span>
+   	   <span>Detalles para tu hogar</span>
+  	  </div>
+	  </div>
+	</div>
+
+
+      <section id="categorias" class="categorias">
+        <button class="banner banner-natura" type="button"
+          data-categoria="Natura">
+          <img src="imagenes/banner-natura.jpg" alt="Productos Natura">
+          <span class="banner-texto">
+            <strong>Natura</strong>
+            <span>Perfumes, cuidado corporal y bienestar</span>
+            <span class="banner-enlace">Explorar Natura →</span>
+          </span>
+        </button>
+
+        <button class="banner banner-avon" type="button"
+          data-categoria="Avon">
+          <img src="imagenes/banner-avon.jpg" alt="Productos Avon">
+          <span class="banner-texto">
+            <strong>Avon</strong>
+            <span>Maquillaje, fragancias y belleza</span>
+            <span class="banner-enlace">Explorar Avon →</span>
+          </span>
+        </button>
+
+        <button class="banner banner-casa" type="button"
+          data-categoria="Casa y Estilo">
+          <img src="imagenes/banner-casa.jpg" alt="Productos para el hogar">
+          <span class="banner-texto">
+            <strong>Casa y Estilo</strong>
+            <span>Detalles para disfrutar tu hogar</span>
+            <span class="banner-enlace">Explorar Casa y Estilo →</span>
+          </span>
+        </button>
+      </section>
+    </section>
+
+    <section id="catalogo" class="catalogo" hidden>
+      <button type="button" id="volver-categorias"
+        class="boton-volver">← Volver a las marcas</button>
+
+      <div class="titulo-seccion">
+        <div>
+          <p class="etiqueta">NUESTRO CATÁLOGO</p>
+          <h2 id="titulo-catalogo">Productos</h2>
+        </div>
+        <p id="cantidad-productos" class="contador">0 productos</p>
+      </div>
+
+      <p id="categoria-vacia" class="carrito-vacio" hidden>
+        Próximamente vas a encontrar productos de esta marca.
+      </p>
+
+      <div id="lista-productos" class="grilla-productos"></div>
+
+      <button type="button" id="ver-mas" class="boton boton-verde boton-ancho" hidden>
+        Ver más productos
+      </button>
+    </section>
+
+    <section id="pedido" class="pedido">
+      <p class="etiqueta">TU SELECCIÓN</p>
+      <h2>Mi pedido</h2>
+      <p class="ayuda">
+        Agregá productos de tus marcas favoritas y revisá tu pedido.
+      </p>
+
+      <div id="carrito-vacio" class="carrito-vacio">
+        Todavía no agregaste productos.
+      </div>
+      <ul id="lista-carrito" class="lista-carrito"></ul>
+
+      <div class="total">
+        <span>Total estimado</span>
+        <strong id="total">$ 0</strong>
+      </div>
+
+      <button id="enviar-whatsapp"
+        class="boton boton-verde boton-ancho" type="button">
+        Preparar pedido por WhatsApp
+      </button>
+
+      <p class="nota">
+        El pedido se abrirá en WhatsApp para que puedas revisarlo y enviarlo.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Cositas de Noe</strong></p>
+    <p>Tu espacio de belleza, bienestar y hogar.</p>
+    <p class="ubicacion">📍Wilde | Avellaneda.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
