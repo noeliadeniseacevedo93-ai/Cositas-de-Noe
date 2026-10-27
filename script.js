@@ -152,7 +152,7 @@ function abrirCategoria(marca) {
 
     filtrosCategorias.appendChild(boton);
   });
-}
+
 // Volver a la portada con los tres banners.
 function volverAlInicio() {
   catalogo.hidden = true;
