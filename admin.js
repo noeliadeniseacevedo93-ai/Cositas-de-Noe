@@ -124,13 +124,16 @@ async function cargarProductosAdmin() {
     .select("id, nombre, marca, categoria, descripcion, precio, imagen, stock, activo")
     .order("id", { ascending: true });
 
-  if (error) {
-    mostrarMensaje(
-      mensajeProducto,
-      "No se pudieron cargar los productos. Revisá los permisos de lectura."
-    );
-    return;
-  }
+if (error) {
+  console.error("Error al cargar productos:", error);
+
+  mostrarMensaje(
+    mensajeProducto,
+    "Error al cargar productos: " + error.message
+  );
+
+  return;
+}
 
   productosAdmin = data || [];
 
