@@ -121,38 +121,6 @@ function abrirCategoria(marca) {
     block: "start"
   });
 }
-  // Obtener las categorías que existen en esta marca.
-  const categorias = [
-    "Todos",
-    ...new Set(
-      productos
-        .filter(producto => producto.marca === marcaActual)
-        .map(producto => producto.categoria)
-    )
-  ];
-
-  categorias.forEach(categoria => {
-    const boton = document.createElement("button");
-
-    boton.type = "button";
-    boton.textContent = categoria;
-    boton.className = "boton-filtro";
-
-    if (categoria === categoriaActual) {
-      boton.classList.add("activo");
-    }
-
-    boton.addEventListener("click", () => {
-      categoriaActual = categoria;
-      cantidadVisible = PRODUCTOS_POR_PAGINA;
-
-      mostrarFiltrosCategorias();
-      mostrarProductos();
-    });
-
-    filtrosCategorias.appendChild(boton);
-  });
-
 // Volver a la portada con los tres banners.
 function volverAlInicio() {
   catalogo.hidden = true;
