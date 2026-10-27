@@ -421,3 +421,45 @@ botonWhatsApp.addEventListener("click", () => {
 // Estado inicial y carga desde la base de datos.
 mostrarCarrito();
 cargarProductos();
+
+const URL_COMPARTIR =
+  "https://cositas-de-noe-compartir.noeliadeniseacevedo93.workers.dev/";
+
+listaProductos.addEventListener("click", async function(event) {
+  const boton = event.target.closest("[data-compartir-id]");
+
+  if (!boton) return;
+
+  const id = boton.dataset.compartirId;
+
+  const producto = productos.find(
+    producto => String(producto.id) === String(id)
+  );
+
+  if (!producto) return;
+
+  const enlace = `${URL_COMPARTIR}?id=${encodeURIComponent(id)}`;
+
+  const texto =
+    `${producto.nombre} - ${formatoPrecio(producto.precio)}\n` +
+    `Mirá este producto de Cositas de Noe: ${enlace}`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: producto.nombre,
+        text: texto,
+        url: enlace
+      });
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("No se pudo compartir:", error);
+      }
+    }
+  } else {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(texto)}`,
+      "_blank"
+    );
+  }
+});
