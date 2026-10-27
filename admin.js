@@ -241,54 +241,6 @@ buscarProducto.addEventListener("input", function () {
 });
 
 
-  productosAdmin = data || [];
-
-  if (productosAdmin.length === 0) {
-    listaProductos.textContent = "Todavía no hay productos.";
-    return;
-  }
-
-  productosAdmin.forEach(function (producto) {
-    const tarjeta = document.createElement("article");
-    tarjeta.className = "producto";
-
-    const titulo = document.createElement("h3");
-    titulo.textContent = producto.nombre;
-
-    const detalles = document.createElement("p");
-    detalles.textContent =
-      producto.marca + " · " + producto.categoria +
-      " · $" + Number(producto.precio).toLocaleString("es-AR");
-
-    const stock = document.createElement("p");
-    stock.textContent = "Stock: " + producto.stock;
-
-    const estado = document.createElement("p");
-    estado.className = "estado";
-    estado.textContent = producto.activo
-      ? "Visible en la tienda"
-      : "Oculto en la tienda";
-
-    const botonEditar = document.createElement("button");
-    botonEditar.type = "button";
-    botonEditar.textContent = "Editar";
-    botonEditar.addEventListener("click", function () {
-      editarProducto(producto);
-    });
-
-    const botonEliminar = document.createElement("button");
-    botonEliminar.type = "button";
-    botonEliminar.textContent = "Eliminar";
-    botonEliminar.className = "eliminar";
-    botonEliminar.addEventListener("click", function () {
-      eliminarProducto(producto);
-    });
-
-    tarjeta.append(titulo, detalles, stock, estado, botonEditar, botonEliminar);
-    listaProductos.appendChild(tarjeta);
-  });
-}
-
 function editarProducto(producto) {
   productoEditando = producto.id;
 
