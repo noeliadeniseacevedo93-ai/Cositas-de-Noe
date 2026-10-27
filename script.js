@@ -1,83 +1,14 @@
 
-const productos = [
-  {
-    id: 1,
-    marca: "Natura",
-    nombre: "Hidratante Corporal Pera y Flor de Loto",
-    categoria: "Hidratación",
-    descripcion: "Hidratación y suavidad para todos los días.",
-    precio: 17900,
-    imagen: "CremaPerayFlordeLoto.webp",
-    stock: 1
-  },
-  {
-    id: 2,
-    marca: "Natura",
-    nombre: "Perfume Paz e Humor",
-    categoria: "Fragancias",
-    descripcion: "Las fragancias que siempre te acompañan.",
-    precio: 46000,
-    imagen: "PazeHumor.webp",
-    stock: 1
-  },
-  {
-    id: 3,
-    marca: "Natura",
-    nombre: "Perfume Kaiak Urbe",
-    categoria: "Fragancias",
-    descripcion: "Una fragancia para acompañarte cada día.",
-    precio: 46000,
-    imagen: "KaiakUrbe.webp",
-    stock: 1
-  },
-  {
-    id: 4,
-    marca: "Natura",
-    nombre: "RF Ac. Tododía Flor de Cereza y Aguacate",
-    categoria: "Cabello",
-    descripcion: "Cuidado especial para cada cabello.",
-    precio: 7200,
-    imagen: "RFTodoFlordeCerezayagua.webp",
-    stock: 1
-  },
-  {
-    id: 5,
-    marca: "Natura",
-    nombre: "RF Shampoo Restauración y Liso",
-    categoria: "Cabello",
-    descripcion: "Cuidado especial para tu cabello.",
-    precio: 8800,
-    imagen: "RFShRestauyLisoP.webp",
-    stock: 1
-  },
-  {  id: 6,
-    marca: "Avon",
-    nombre: "Hid. Care Lichi y Aloe Vera",
-    categoria: "Hidratación",
-    descripcion: "Hidratación Refrescante",
-    precio: 12100,
-    imagen: "carelichiyaloe.webp",
-    stock: 1
-  },
-  {  id: 7,
-    marca: "Casa y Estilo",
-    nombre: "Copa de Champagne",
-    categoria: "Artículos del Hogar",
-    descripcion: "Estilo",
-    precio: 6000,
-    imagen: "CopaChampagne.webp",
-    stock: 8
-  }
-];
+let productos = [];
 
 const carrito = [];
 const PRODUCTOS_POR_PAGINA = 6;
+
 let marcaActual = "";
 let cantidadVisible = PRODUCTOS_POR_PAGINA;
 let categoriaActual = "Todos";
 
 const filtrosCategorias = document.getElementById("filtros-categorias");
-
 const inicio = document.getElementById("inicio");
 const catalogo = document.getElementById("catalogo");
 const tituloCatalogo = document.getElementById("titulo-catalogo");
@@ -94,14 +25,50 @@ const botonWhatsApp = document.getElementById("enviar-whatsapp");
 const NUMERO_WHATSAPP = "5491151538312";
 
 function formatoPrecio(precio) {
-  return precio.toLocaleString("es-AR", {
+  return Number(precio).toLocaleString("es-AR", {
     style: "currency",
     currency: "ARS",
     maximumFractionDigits: 0
   });
 }
 
-// Abrir la categoría seleccionada.
+// Consultar productos activos en Supabase.
+async function cargarProductos() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("id, marca, nombre, categoria, descripcion, precio, imagen, stock, activo")
+      .eq("activo", true)
+      .order("id");
+
+    if (error) {
+      throw error;
+    }
+
+    productos = data.map(producto => ({
+      ...producto,
+      id: Number(producto.id),
+      precio: Number(producto.precio),
+      stock: Number(producto.stock),
+      imagen: producto.imagen || ""
+    }));
+
+    // Si se abrió una marca mientras cargaban los datos,
+    // actualizar el catálogo cuando termine la consulta.
+    if (marcaActual) {
+      mostrarFiltrosCategorias();
+      mostrarProductos();
+    }
+
+    console.log("Productos cargados:", productos.length);
+  } catch (error) {
+    console.error("Error al cargar productos:", error);
+    alert(
+      "No pudimos cargar los productos. Revisá la conexión con Supabase."
+    );
+  }
+}
+
 // Abrir la marca seleccionada.
 function abrirCategoria(marca) {
   marcaActual = marca;
@@ -121,17 +88,22 @@ function abrirCategoria(marca) {
     block: "start"
   });
 }
-// Volver a la portada con los tres banners.
+
+// Volver a la portada.
 function volverAlInicio() {
   catalogo.hidden = true;
   inicio.hidden = false;
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
+
+// Crear los filtros según las categorías disponibles.
 function mostrarFiltrosCategorias() {
   filtrosCategorias.innerHTML = "";
 
-  // Obtener las categorías que existen en esta marca.
   const categorias = [
     "Todos",
     ...new Set(
@@ -163,16 +135,15 @@ function mostrarFiltrosCategorias() {
     filtrosCategorias.appendChild(boton);
   });
 }
-// Mostrar solamente los productos de la marca seleccionada.
+
+// Mostrar los productos de la marca y categoría seleccionadas.
 function mostrarProductos() {
   listaProductos.innerHTML = "";
 
-  // Primero filtramos por marca.
   const productosMarca = productos.filter(
     producto => producto.marca === marcaActual
   );
 
-  // Después filtramos por categoría.
   const productosFiltrados = productosMarca.filter(
     producto =>
       categoriaActual === "Todos" ||
@@ -202,8 +173,10 @@ function mostrarProductos() {
       ? itemCarrito.cantidad
       : 0;
 
-    const stockDisponible =
-      producto.stock - cantidadEnCarrito;
+    const stockDisponible = Math.max(
+      0,
+      producto.stock - cantidadEnCarrito
+    );
 
     const tarjeta = document.createElement("article");
     tarjeta.className = "tarjeta";
@@ -220,7 +193,7 @@ function mostrarProductos() {
       <div class="contenido-tarjeta">
         <p class="categoria">${producto.categoria}</p>
         <h3>${producto.nombre}</h3>
-        <p class="descripcion">${producto.descripcion}</p>
+        <p class="descripcion">${producto.descripcion || ""}</p>
 
         <p class="stock">
           ${
@@ -247,12 +220,21 @@ function mostrarProductos() {
       </div>
     `;
 
+    // Las imágenes se guardan en GitHub.
+    // Si una imagen no existe, ocultamos solamente esa imagen.
+    const imagen = tarjeta.querySelector("img");
+
+    imagen.addEventListener("error", () => {
+      imagen.style.display = "none";
+    });
+
     listaProductos.appendChild(tarjeta);
   });
 
   botonVerMas.hidden =
     cantidadVisible >= productosFiltrados.length;
 }
+
 // Los banners abren cada marca.
 document.querySelectorAll("[data-categoria]").forEach(boton => {
   boton.addEventListener("click", () => {
@@ -271,6 +253,7 @@ document.querySelector('a[href="#categorias"]')
   .addEventListener("click", evento => {
     evento.preventDefault();
     volverAlInicio();
+
     document.getElementById("categorias").scrollIntoView({
       behavior: "smooth"
     });
@@ -312,6 +295,7 @@ function agregarAlCarrito(id) {
 
 listaProductos.addEventListener("click", evento => {
   const boton = evento.target.closest("[data-id]");
+
   if (boton && !boton.disabled) {
     agregarAlCarrito(Number(boton.dataset.id));
   }
@@ -360,13 +344,14 @@ function mostrarCarrito() {
   totalElemento.textContent = formatoPrecio(total);
 }
 
-// Controlar cantidades y eliminar productos.
+// Controlar cantidades y quitar productos.
 listaCarrito.addEventListener("click", evento => {
   const boton = evento.target.closest("[data-accion]");
   if (!boton) return;
 
   const id = Number(boton.dataset.id);
   const indice = carrito.findIndex(item => item.id === id);
+
   if (indice === -1) return;
 
   if (boton.dataset.accion === "sumar") {
@@ -403,13 +388,17 @@ botonWhatsApp.addEventListener("click", () => {
     return;
   }
 
-  let mensaje = "¡Hola! Quiero hacer este pedido de Cositas de Noe:\n\n";
+  let mensaje =
+    "¡Hola! Quiero hacer este pedido de Cositas de Noe:\n\n";
+
   let total = 0;
 
   carrito.forEach(item => {
     const subtotal = item.precio * item.cantidad;
     total += subtotal;
-    mensaje += `- ${item.nombre} x ${item.cantidad}: ${formatoPrecio(subtotal)}\n`;
+
+    mensaje +=
+      `- ${item.nombre} x ${item.cantidad}: ${formatoPrecio(subtotal)}\n`;
   });
 
   mensaje += `\nTotal estimado: ${formatoPrecio(total)}`;
@@ -421,5 +410,6 @@ botonWhatsApp.addEventListener("click", () => {
   window.open(url, "_blank");
 });
 
-// Estado inicial.
+// Estado inicial y carga desde la base de datos.
 mostrarCarrito();
+cargarProductos();
