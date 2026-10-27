@@ -233,11 +233,25 @@
       </section>
 
       <section class="panel">
+
         <h2>Mis productos</h2>
         <p class="ayuda">
           Podés editar los datos, cambiar el stock o eliminar un producto.
         </p>
-        <div id="lista-productos"></div>
+
+        <div class="campo">
+          <label for="buscar-producto">Buscar productos</label>
+        <input
+          id="buscar-producto"
+          type="search"
+          placeholder="Escribí un nombre, marca, categoría..."
+          autocomplete="off"
+        >
+        <span class="ayuda" id="cantidad-resultados"></span>
+      </div>
+
+      <div id="lista-productos"></div>
+
       </section>
     </section>
   </main>
