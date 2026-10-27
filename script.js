@@ -203,6 +203,7 @@ function mostrarProductos() {
           }
         </p>
 
+       
         <div class="fila-precio">
           <span class="precio">
             ${formatoPrecio(producto.precio)}
@@ -217,8 +218,15 @@ function mostrarProductos() {
             ${stockDisponible > 0 ? "+ Agregar" : "Sin stock"}
           </button>
         </div>
-      </div>
-    `;
+
+        <button
+          class="boton-compartir"
+          type="button"
+          data-compartir-id="${producto.id}"
+        >
+          Compartir producto
+        </button>
+
 
     // Las imágenes se guardan en GitHub.
     // Si una imagen no existe, ocultamos solamente esa imagen.
