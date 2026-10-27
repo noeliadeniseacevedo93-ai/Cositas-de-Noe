@@ -320,4 +320,4 @@ async function iniciarPanel() {
   }
 }
 
-console.log("ADMIN.JS SE CARGÓ CORRECTAMENTE");
+iniciarPanel();
