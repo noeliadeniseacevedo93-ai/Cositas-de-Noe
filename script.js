@@ -102,9 +102,25 @@ function formatoPrecio(precio) {
 }
 
 // Abrir la categoría seleccionada.
-function mostrarFiltrosCategorias() {
-  filtrosCategorias.innerHTML = "";
+// Abrir la marca seleccionada.
+function abrirCategoria(marca) {
+  marcaActual = marca;
+  categoriaActual = "Todos";
+  cantidadVisible = PRODUCTOS_POR_PAGINA;
 
+  inicio.hidden = true;
+  catalogo.hidden = false;
+
+  tituloCatalogo.textContent = marca;
+
+  mostrarFiltrosCategorias();
+  mostrarProductos();
+
+  catalogo.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
   // Obtener las categorías que existen en esta marca.
   const categorias = [
     "Todos",
