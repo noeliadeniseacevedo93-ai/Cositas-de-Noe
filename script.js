@@ -31,7 +31,7 @@ function formatoPrecio(precio) {
     maximumFractionDigits: 0
   });
 }
-
+console.log("URL de Supabase:", SUPABASE_URL);
 // Consultar productos activos en Supabase.
 async function cargarProductos() {
   try {
