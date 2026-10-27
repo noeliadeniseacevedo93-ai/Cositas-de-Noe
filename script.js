@@ -4,7 +4,7 @@ const productos = [
     id: 1,
     marca: "Natura",
     nombre: "Hidratante Corporal Pera y Flor de Loto",
-    categoria: "Cuidado corporal",
+    categoria: "Hidratación",
     descripcion: "Hidratación y suavidad para todos los días.",
     precio: 17900,
     imagen: "CremaPerayFlordeLoto.webp",
@@ -53,7 +53,7 @@ const productos = [
   {  id: 6,
     marca: "Avon",
     nombre: "Hid. Care Lichi y Aloe Vera",
-    categoria: "Cuidado corporal",
+    categoria: "Hidratación",
     descripcion: "Hidratación Refrescante",
     precio: 12100,
     imagen: "carelichiyaloe.webp",
@@ -74,6 +74,9 @@ const carrito = [];
 const PRODUCTOS_POR_PAGINA = 6;
 let marcaActual = "";
 let cantidadVisible = PRODUCTOS_POR_PAGINA;
+let categoriaActual = "Todos";
+
+const filtrosCategorias = document.getElementById("filtros-categorias");
 
 const inicio = document.getElementById("inicio");
 const catalogo = document.getElementById("catalogo");
@@ -99,19 +102,41 @@ function formatoPrecio(precio) {
 }
 
 // Abrir la categoría seleccionada.
-function abrirCategoria(marca) {
-  marcaActual = marca;
-  cantidadVisible = PRODUCTOS_POR_PAGINA;
+function mostrarFiltrosCategorias() {
+  filtrosCategorias.innerHTML = "";
 
-  inicio.hidden = true;
-  catalogo.hidden = false;
+  // Obtener las categorías que existen en esta marca.
+  const categorias = [
+    "Todos",
+    ...new Set(
+      productos
+        .filter(producto => producto.marca === marcaActual)
+        .map(producto => producto.categoria)
+    )
+  ];
 
-  tituloCatalogo.textContent = marca;
-  mostrarProductos();
+  categorias.forEach(categoria => {
+    const boton = document.createElement("button");
 
-  catalogo.scrollIntoView({ behavior: "smooth", block: "start" });
+    boton.type = "button";
+    boton.textContent = categoria;
+    boton.className = "boton-filtro";
+
+    if (categoria === categoriaActual) {
+      boton.classList.add("activo");
+    }
+
+    boton.addEventListener("click", () => {
+      categoriaActual = categoria;
+      cantidadVisible = PRODUCTOS_POR_PAGINA;
+
+      mostrarFiltrosCategorias();
+      mostrarProductos();
+    });
+
+    filtrosCategorias.appendChild(boton);
+  });
 }
-
 // Volver a la portada con los tres banners.
 function volverAlInicio() {
   catalogo.hidden = true;
@@ -119,33 +144,93 @@ function volverAlInicio() {
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
+function mostrarFiltrosCategorias() {
+  filtrosCategorias.innerHTML = "";
 
+  // Obtener las categorías que existen en esta marca.
+  const categorias = [
+    "Todos",
+    ...new Set(
+      productos
+        .filter(producto => producto.marca === marcaActual)
+        .map(producto => producto.categoria)
+    )
+  ];
+
+  categorias.forEach(categoria => {
+    const boton = document.createElement("button");
+
+    boton.type = "button";
+    boton.textContent = categoria;
+    boton.className = "boton-filtro";
+
+    if (categoria === categoriaActual) {
+      boton.classList.add("activo");
+    }
+
+    boton.addEventListener("click", () => {
+      categoriaActual = categoria;
+      cantidadVisible = PRODUCTOS_POR_PAGINA;
+
+      mostrarFiltrosCategorias();
+      mostrarProductos();
+    });
+
+    filtrosCategorias.appendChild(boton);
+  });
+}
 // Mostrar solamente los productos de la marca seleccionada.
 function mostrarProductos() {
   listaProductos.innerHTML = "";
 
+  // Primero filtramos por marca.
   const productosMarca = productos.filter(
     producto => producto.marca === marcaActual
   );
 
-  const productosVisibles = productosMarca.slice(0, cantidadVisible);
+  // Después filtramos por categoría.
+  const productosFiltrados = productosMarca.filter(
+    producto =>
+      categoriaActual === "Todos" ||
+      producto.categoria === categoriaActual
+  );
+
+  const productosVisibles = productosFiltrados.slice(
+    0,
+    cantidadVisible
+  );
 
   cantidadProductos.textContent =
-    `${productosMarca.length} ${productosMarca.length === 1 ? "producto" : "productos"}`;
+    `${productosFiltrados.length} ${
+      productosFiltrados.length === 1
+        ? "producto"
+        : "productos"
+    }`;
 
-  categoriaVacia.hidden = productosMarca.length > 0;
+  categoriaVacia.hidden = productosFiltrados.length > 0;
 
   productosVisibles.forEach(producto => {
-    const itemCarrito = carrito.find(item => item.id === producto.id);
-    const cantidadEnCarrito = itemCarrito ? itemCarrito.cantidad : 0;
-    const stockDisponible = producto.stock - cantidadEnCarrito;
+    const itemCarrito = carrito.find(
+      item => item.id === producto.id
+    );
+
+    const cantidadEnCarrito = itemCarrito
+      ? itemCarrito.cantidad
+      : 0;
+
+    const stockDisponible =
+      producto.stock - cantidadEnCarrito;
 
     const tarjeta = document.createElement("article");
     tarjeta.className = "tarjeta";
 
     tarjeta.innerHTML = `
       <div class="imagen-producto">
-        <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
+        <img
+          src="${producto.imagen}"
+          alt="${producto.nombre}"
+          loading="lazy"
+        >
       </div>
 
       <div class="contenido-tarjeta">
@@ -154,18 +239,24 @@ function mostrarProductos() {
         <p class="descripcion">${producto.descripcion}</p>
 
         <p class="stock">
-          ${stockDisponible > 0
-            ? `Disponibles: ${stockDisponible}`
-            : "Sin stock"}
+          ${
+            stockDisponible > 0
+              ? `Disponibles: ${stockDisponible}`
+              : "Sin stock"
+          }
         </p>
 
         <div class="fila-precio">
-          <span class="precio">${formatoPrecio(producto.precio)}</span>
+          <span class="precio">
+            ${formatoPrecio(producto.precio)}
+          </span>
+
           <button
             class="boton-agregar"
             type="button"
             data-id="${producto.id}"
-            ${stockDisponible <= 0 ? "disabled" : ""}>
+            ${stockDisponible <= 0 ? "disabled" : ""}
+          >
             ${stockDisponible > 0 ? "+ Agregar" : "Sin stock"}
           </button>
         </div>
@@ -175,9 +266,9 @@ function mostrarProductos() {
     listaProductos.appendChild(tarjeta);
   });
 
-  botonVerMas.hidden = cantidadVisible >= productosMarca.length;
+  botonVerMas.hidden =
+    cantidadVisible >= productosFiltrados.length;
 }
-
 // Los banners abren cada marca.
 document.querySelectorAll("[data-categoria]").forEach(boton => {
   boton.addEventListener("click", () => {
