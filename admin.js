@@ -234,7 +234,11 @@ function mostrarProductosFiltrados() {
   });
 }
 
-buscarProducto.addEventListener("input", mostrarProductosFiltrados);
+buscarProducto.addEventListener("input", function () {
+  console.log("Buscador:", buscarProducto.value);
+  console.log("Productos cargados:", productosAdmin.length);
+  mostrarProductosFiltrados();
+});
 
 
   productosAdmin = data || [];
