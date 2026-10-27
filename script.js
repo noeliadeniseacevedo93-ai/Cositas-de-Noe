@@ -137,6 +137,7 @@ function mostrarFiltrosCategorias() {
 }
 
 // Mostrar los productos de la marca y categoría seleccionadas.
+
 function mostrarProductos() {
   listaProductos.innerHTML = "";
 
@@ -161,6 +162,87 @@ function mostrarProductos() {
         ? "producto"
         : "productos"
     }`;
+
+  categoriaVacia.hidden = productosFiltrados.length > 0;
+
+  productosVisibles.forEach(producto => {
+    const itemCarrito = carrito.find(
+      item => item.id === producto.id
+    );
+
+    const cantidadEnCarrito = itemCarrito
+      ? itemCarrito.cantidad
+      : 0;
+
+    const stockDisponible = Math.max(
+      0,
+      producto.stock - cantidadEnCarrito
+    );
+
+    const tarjeta = document.createElement("article");
+    tarjeta.className = "tarjeta";
+
+    tarjeta.innerHTML = `
+      <div class="imagen-producto">
+        <img
+          src="${producto.imagen}"
+          alt="${producto.nombre}"
+          loading="lazy"
+        >
+      </div>
+
+      <div class="contenido-tarjeta">
+        <p class="categoria">${producto.categoria}</p>
+        <h3>${producto.nombre}</h3>
+        <p class="descripcion">${producto.descripcion || ""}</p>
+
+        <p class="stock">
+          ${
+            stockDisponible > 0
+              ? `Disponibles: ${stockDisponible}`
+              : "Sin stock"
+          }
+        </p>
+
+        <div class="fila-precio">
+          <span class="precio">
+            ${formatoPrecio(producto.precio)}
+          </span>
+
+          <button
+            class="boton-agregar"
+            type="button"
+            data-id="${producto.id}"
+            ${stockDisponible <= 0 ? "disabled" : ""}
+          >
+            ${stockDisponible > 0 ? "+ Agregar" : "Sin stock"}
+          </button>
+        </div>
+
+        <button
+          class="boton-compartir"
+          type="button"
+          data-compartir-id="${producto.id}"
+        >
+          Compartir producto
+        </button>
+      </div>
+    `;
+
+    // Si una imagen no existe, ocultamos solamente esa imagen.
+    const imagen = tarjeta.querySelector("img");
+
+    imagen.addEventListener("error", () => {
+      imagen.style.display = "none";
+    });
+
+    listaProductos.appendChild(tarjeta);
+  });
+
+  botonVerMas.hidden =
+    cantidadVisible >= productosFiltrados.length;
+}
+`;
 
   categoriaVacia.hidden = productosFiltrados.length > 0;
 
