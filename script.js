@@ -27,6 +27,21 @@ const NUMERO_WHATSAPP = "5491151538312";
 const URL_COMPARTIR =
   "https://cositas-de-noe-compartir.noeliadeniseacevedo93.workers.dev/";
 
+const URL_IMAGENES =
+  "https://noeliadeniseacevedo93-ai.github.io/Cositas-de-Noe/";
+
+function obtenerUrlImagen(imagen) {
+  if (!imagen) return "";
+
+  // Si ya es una URL completa, la usamos directamente.
+  if (imagen.startsWith("http://") || imagen.startsWith("https://")) {
+    return imagen;
+  }
+
+  // Si es solo el nombre del archivo, agregamos la dirección de la página.
+  return URL_IMAGENES + encodeURIComponent(imagen.trim());
+}
+
 function formatoPrecio(precio) {
   return Number(precio).toLocaleString("es-AR", {
     style: "currency",
