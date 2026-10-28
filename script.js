@@ -24,6 +24,9 @@ const botonWhatsApp = document.getElementById("enviar-whatsapp");
 
 const NUMERO_WHATSAPP = "5491151538312";
 
+const URL_COMPARTIR =
+  "https://cositas-de-noe-compartir.noeliadeniseacevedo93.workers.dev/";
+
 function formatoPrecio(precio) {
   return Number(precio).toLocaleString("es-AR", {
     style: "currency",
@@ -31,13 +34,15 @@ function formatoPrecio(precio) {
     maximumFractionDigits: 0
   });
 }
-console.log("URL de Supabase:", SUPABASE_URL);
-// Consultar productos activos en Supabase.
+
+// Cargar los productos activos desde Supabase.
 async function cargarProductos() {
   try {
     const { data, error } = await supabaseClient
       .from("products")
-      .select("id, marca, nombre, categoria, descripcion, precio, imagen, stock, activo")
+      .select(
+        "id, marca, nombre, categoria, descripcion, precio, imagen, stock, activo"
+      )
       .eq("activo", true)
       .order("id");
 
@@ -53,8 +58,6 @@ async function cargarProductos() {
       imagen: producto.imagen || ""
     }));
 
-    // Si se abrió una marca mientras cargaban los datos,
-    // actualizar el catálogo cuando termine la consulta.
     if (marcaActual) {
       mostrarFiltrosCategorias();
       mostrarProductos();
@@ -63,6 +66,7 @@ async function cargarProductos() {
     console.log("Productos cargados:", productos.length);
   } catch (error) {
     console.error("Error al cargar productos:", error);
+
     alert(
       "No pudimos cargar los productos. Revisá la conexión con Supabase."
     );
@@ -136,8 +140,7 @@ function mostrarFiltrosCategorias() {
   });
 }
 
-// Mostrar los productos de la marca y categoría seleccionadas.
-
+// Mostrar productos de la marca y categoría seleccionadas.
 function mostrarProductos() {
   listaProductos.innerHTML = "";
 
@@ -193,8 +196,12 @@ function mostrarProductos() {
 
       <div class="contenido-tarjeta">
         <p class="categoria">${producto.categoria}</p>
+
         <h3>${producto.nombre}</h3>
-        <p class="descripcion">${producto.descripcion || ""}</p>
+
+        <p class="descripcion">
+          ${producto.descripcion || ""}
+        </p>
 
         <p class="stock">
           ${
@@ -229,89 +236,7 @@ function mostrarProductos() {
       </div>
     `;
 
-    // Si una imagen no existe, ocultamos solamente esa imagen.
-    const imagen = tarjeta.querySelector("img");
-
-    imagen.addEventListener("error", () => {
-      imagen.style.display = "none";
-    });
-
-    listaProductos.appendChild(tarjeta);
-  });
-
-  botonVerMas.hidden =
-    cantidadVisible >= productosFiltrados.length;
-}
-`;
-
-  categoriaVacia.hidden = productosFiltrados.length > 0;
-
-  productosVisibles.forEach(producto => {
-    const itemCarrito = carrito.find(
-      item => item.id === producto.id
-    );
-
-    const cantidadEnCarrito = itemCarrito
-      ? itemCarrito.cantidad
-      : 0;
-
-    const stockDisponible = Math.max(
-      0,
-      producto.stock - cantidadEnCarrito
-    );
-
-    const tarjeta = document.createElement("article");
-    tarjeta.className = "tarjeta";
-
-    tarjeta.innerHTML = `
-      <div class="imagen-producto">
-        <img
-          src="${producto.imagen}"
-          alt="${producto.nombre}"
-          loading="lazy"
-        >
-      </div>
-
-      <div class="contenido-tarjeta">
-        <p class="categoria">${producto.categoria}</p>
-        <h3>${producto.nombre}</h3>
-        <p class="descripcion">${producto.descripcion || ""}</p>
-
-        <p class="stock">
-          ${
-            stockDisponible > 0
-              ? `Disponibles: ${stockDisponible}`
-              : "Sin stock"
-          }
-        </p>
-
-       
-        <div class="fila-precio">
-          <span class="precio">
-            ${formatoPrecio(producto.precio)}
-          </span>
-
-          <button
-            class="boton-agregar"
-            type="button"
-            data-id="${producto.id}"
-            ${stockDisponible <= 0 ? "disabled" : ""}
-          >
-            ${stockDisponible > 0 ? "+ Agregar" : "Sin stock"}
-          </button>
-        </div>
-
-        <button
-          class="boton-compartir"
-          type="button"
-          data-compartir-id="${producto.id}"
-        >
-          Compartir producto
-        </button>
-
-
-    // Las imágenes se guardan en GitHub.
-    // Si una imagen no existe, ocultamos solamente esa imagen.
+    // Ocultar la imagen si el archivo no existe.
     const imagen = tarjeta.querySelector("img");
 
     imagen.addEventListener("error", () => {
@@ -332,6 +257,7 @@ document.querySelectorAll("[data-categoria]").forEach(boton => {
   });
 });
 
+// Volver a las categorías y a la portada.
 document.getElementById("volver-categorias")
   .addEventListener("click", volverAlInicio);
 
@@ -355,9 +281,10 @@ botonVerMas.addEventListener("click", () => {
   mostrarProductos();
 });
 
-// Agregar productos al carrito.
+// Agregar un producto al carrito.
 function agregarAlCarrito(id) {
   const producto = productos.find(p => p.id === id);
+
   if (!producto) return;
 
   const item = carrito.find(p => p.id === id);
@@ -383,11 +310,53 @@ function agregarAlCarrito(id) {
   mostrarCarrito();
 }
 
+// Gestionar el botón Agregar.
 listaProductos.addEventListener("click", evento => {
-  const boton = evento.target.closest("[data-id]");
+  const boton = evento.target.closest(".boton-agregar");
 
-  if (boton && !boton.disabled) {
-    agregarAlCarrito(Number(boton.dataset.id));
+  if (!boton || boton.disabled) return;
+
+  agregarAlCarrito(Number(boton.dataset.id));
+});
+
+// Compartir un producto individual.
+listaProductos.addEventListener("click", async evento => {
+  const boton = evento.target.closest("[data-compartir-id]");
+
+  if (!boton) return;
+
+  const id = boton.dataset.compartirId;
+
+  const producto = productos.find(
+    p => String(p.id) === String(id)
+  );
+
+  if (!producto) return;
+
+  const enlace =
+    `${URL_COMPARTIR}?id=${encodeURIComponent(id)}`;
+
+  const texto =
+    `${producto.nombre} - ${formatoPrecio(producto.precio)}\n` +
+    `Mirá este producto de Cositas de Noe: ${enlace}`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: producto.nombre,
+        text: texto,
+        url: enlace
+      });
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("No se pudo compartir:", error);
+      }
+    }
+  } else {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(texto)}`,
+      "_blank"
+    );
   }
 });
 
@@ -413,18 +382,30 @@ function mostrarCarrito() {
       </div>
 
       <div class="controles-cantidad">
-        <button class="boton-cantidad" type="button"
-          data-accion="restar" data-id="${item.id}"
-          aria-label="Restar una unidad">−</button>
+        <button
+          class="boton-cantidad"
+          type="button"
+          data-accion="restar"
+          data-id="${item.id}"
+          aria-label="Restar una unidad"
+        >−</button>
 
         <span>${item.cantidad}</span>
 
-        <button class="boton-cantidad" type="button"
-          data-accion="sumar" data-id="${item.id}"
-          aria-label="Sumar una unidad">+</button>
+        <button
+          class="boton-cantidad"
+          type="button"
+          data-accion="sumar"
+          data-id="${item.id}"
+          aria-label="Sumar una unidad"
+        >+</button>
 
-        <button class="boton-quitar" type="button"
-          data-accion="quitar" data-id="${item.id}">Quitar</button>
+        <button
+          class="boton-quitar"
+          type="button"
+          data-accion="quitar"
+          data-id="${item.id}"
+        >Quitar</button>
       </div>
     `;
 
@@ -437,6 +418,7 @@ function mostrarCarrito() {
 // Controlar cantidades y quitar productos.
 listaCarrito.addEventListener("click", evento => {
   const boton = evento.target.closest("[data-accion]");
+
   if (!boton) return;
 
   const id = Number(boton.dataset.id);
@@ -447,7 +429,10 @@ listaCarrito.addEventListener("click", evento => {
   if (boton.dataset.accion === "sumar") {
     const producto = productos.find(p => p.id === id);
 
-    if (producto && carrito[indice].cantidad < producto.stock) {
+    if (
+      producto &&
+      carrito[indice].cantidad < producto.stock
+    ) {
       carrito[indice].cantidad++;
     } else {
       alert("No hay más unidades disponibles de este producto.");
@@ -488,7 +473,8 @@ botonWhatsApp.addEventListener("click", () => {
     total += subtotal;
 
     mensaje +=
-      `- ${item.nombre} x ${item.cantidad}: ${formatoPrecio(subtotal)}\n`;
+      `- ${item.nombre} x ${item.cantidad}: ` +
+      `${formatoPrecio(subtotal)}\n`;
   });
 
   mensaje += `\nTotal estimado: ${formatoPrecio(total)}`;
@@ -500,48 +486,6 @@ botonWhatsApp.addEventListener("click", () => {
   window.open(url, "_blank");
 });
 
-// Estado inicial y carga desde la base de datos.
+// Inicializar el carrito y cargar los productos.
 mostrarCarrito();
 cargarProductos();
-
-const URL_COMPARTIR =
-  "https://cositas-de-noe-compartir.noeliadeniseacevedo93.workers.dev/";
-
-listaProductos.addEventListener("click", async function(event) {
-  const boton = event.target.closest("[data-compartir-id]");
-
-  if (!boton) return;
-
-  const id = boton.dataset.compartirId;
-
-  const producto = productos.find(
-    producto => String(producto.id) === String(id)
-  );
-
-  if (!producto) return;
-
-  const enlace = `${URL_COMPARTIR}?id=${encodeURIComponent(id)}`;
-
-  const texto =
-    `${producto.nombre} - ${formatoPrecio(producto.precio)}\n` +
-    `Mirá este producto de Cositas de Noe: ${enlace}`;
-
-  if (navigator.share) {
-    try {
-      await navigator.share({
-        title: producto.nombre,
-        text: texto,
-        url: enlace
-      });
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("No se pudo compartir:", error);
-      }
-    }
-  } else {
-    window.open(
-      `https://wa.me/?text=${encodeURIComponent(texto)}`,
-      "_blank"
-    );
-  }
-});
