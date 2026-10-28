@@ -203,7 +203,7 @@ function mostrarProductos() {
     tarjeta.innerHTML = `
       <div>
         <img
-          src="${producto.imagen}"
+          src="${obtenerUrlImagen(producto.imagen)}"
           alt="${producto.nombre}"
           loading="lazy"
         >
