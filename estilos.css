@@ -309,18 +309,21 @@ main {
   overflow: hidden;
   background: #fbf6f5;
   box-sizing: border-box;
+  position: relative;
 }
 
+
 .imagen-producto img {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 178px;
-  object-fit: contain;
+  display: block !important;
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 178px !important;
+  object-fit: contain !important;
   object-position: center;
   transition: transform 0.25s ease;
 }
+
 
 
 .tarjeta:hover .imagen-producto img {
