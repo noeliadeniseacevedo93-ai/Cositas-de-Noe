@@ -186,7 +186,7 @@ function mostrarProductos() {
     tarjeta.className = "tarjeta";
 
     tarjeta.innerHTML = `
-      <div class="imagen-producto">
+      <div>
         <img
           src="${producto.imagen}"
           alt="${producto.nombre}"
