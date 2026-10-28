@@ -29,7 +29,16 @@ const URL_COMPARTIR =
 
 const URL_IMAGENES =
   "https://noeliadeniseacevedo93-ai.github.io/Cositas-de-Noe/";
+function obtenerUrlImagen(imagen) {
+  if (!imagen) return "";
 
+  if (imagen.startsWith("http")) {
+    return imagen;
+  }
+
+  return "https://noeliadeniseacevedo93-ai.github.io/Cositas-de-Noe/"
+    + encodeURIComponent(imagen.trim());
+}
 function obtenerUrlImagen(imagen) {
   if (!imagen) return "";
 
