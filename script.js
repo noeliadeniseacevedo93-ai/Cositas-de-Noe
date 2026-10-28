@@ -210,13 +210,15 @@ function mostrarProductos() {
     tarjeta.className = "tarjeta";
 
     tarjeta.innerHTML = `
-      <div>
+      
+      <div class="imagen-producto">
         <img
           src="${obtenerUrlImagen(producto.imagen)}"
           alt="${producto.nombre}"
           loading="lazy"
         >
       </div>
+
 
       <div class="contenido-tarjeta">
         <p class="categoria">${producto.categoria}</p>
