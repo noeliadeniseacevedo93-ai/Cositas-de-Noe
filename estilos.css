@@ -823,6 +823,29 @@ footer .ubicacion {
   background: rgba(255, 255, 255, 0.2);
 }
 
+button.boton-compartir {
+  background: #85465e !important;
+  color: #ffffff !important;
+  border: 2px solid #85465e !important;
+  border-radius: 999px !important;
+  padding: 12px 18px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 12px rgba(133, 70, 94, 0.18) !important;
+}
+
+button.boton-compartir::before {
+  content: "↗" !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
 .boton-compartir:focus-visible {
   outline: 2px solid #85465e;
   outline-offset: 3px;
